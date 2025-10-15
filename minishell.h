@@ -8,16 +8,6 @@ typedef struct s_ids
 	int				pid;
 }	t_ids;
 
-//this will contain envp
-typedef struct	s_parse_data
-{
-	char		*line;
-	char		*operators[10];
-	int			*line_count;
-	t_here_doc	*here_list;
-	t_btree		*cmds_tree;
-}	t_parse_data;
-
 typedef struct s_data
 {
 	char			**env;
@@ -61,6 +51,16 @@ typedef struct	s_here_doc
 	char				*file_name;
 	struct s_here_doc	*next;
 }	t_here_doc;
+//this will contain envp
+typedef struct	s_parse_data
+{
+	char		*line;
+	char		*operators[10];
+	int			*line_count;
+	t_here_doc	*here_list;
+	t_btree		*exec_tree;
+}	t_parse_data;
+
 
 # include "libft/libft.h"
 # include <stdio.h>

@@ -6,7 +6,7 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 18:43:42 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/15 19:36:43 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/15 22:20:19 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,15 @@ void	init_parse_data(t_parse_data *d)
 {
 	d->here_list = NULL;
 	d->line_count = 0;
-	d->cmds_tree = NULL;
+	d->exec_tree = NULL;
 	d->line = NULL;
 	set_operators(d->operators);
 }
 
 void	init_data(t_data *data, int argc, char **argv, char **envp)
 {
+	(void)argc;
+	(void)argv;
 	data->env = ft_coppyarrstr(envp);
 	data->rt = 0;
 	data->subshell = 0;
@@ -92,7 +94,7 @@ int	main(int argc, char **argv, char **envp)
 	t_data			data;
 
 	init_parse_data(&d);
-	init_data(&data, envp, argc, argv);
+	init_data(&data, argc, argv, envp);
 	signal(SIGINT, signal_parent_sigint);
 	while (1)
 	{
@@ -100,17 +102,16 @@ int	main(int argc, char **argv, char **envp)
 		if (!d.line)
 			break ;
 		if (d.line[0] && ++d.line_count)
-		{
-			
+		{			
 			add_history(d.line);
-			d.cmds_tree = create_exec_tree(&d, &data);
-			if (d.cmds_tree)
+			d.exec_tree = create_exec_tree(&d, &data);
+			if (d.exec_tree)
 			{
-				// print_btree_pyramid(cmds_tree);
-				data.head = d.cmds_tree;
-				execute(d.cmds_tree, &data);
+				// print_btree_pyramid(exec_tree);
+				data.head = d.exec_tree;
+				execute(d.exec_tree, &data);
 				free_here_docs(&d.here_list);
-				btree_apply_suffix(d.cmds_tree, delete_bnode);
+				btree_apply_suffix(d.exec_tree, delete_bnode);
 				data.rt = wait_and_get_exit_value(data.pids);
 			}
 			rl_on_new_line();

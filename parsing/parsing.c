@@ -499,21 +499,20 @@ static void	print_tokens(t_print_d *data)
 
 t_btree	*create_exec_tree(t_parse_data *d, t_data *data)
 {
-	t_btree		*exec_tree;
-	t_list		*head;
+	t_list		*tokens;
 	t_print_d	print_data;
 
 	print_data.line = d->line;
 	print_data.operators = d->operators;
-	head = tokenize(d->line, d->operators);
-	if (!head)
+	tokens = tokenize(d->line, d->operators);
+	if (!tokens)
 		return (ft_printf(2, "minishell: tokenize() returned NULL\n"), NULL);
-	if (validate_tokens(head, d->operators))
-		return (ft_printf(2, "minishell: validate_tokens() failed\n"), del_tokens(head), NULL);
-	if (expand(&head, d->line, data))
-		return (ft_printf(2, "minishell: parse() failed\n"), del_tokens(head), NULL);
-	// ft_lstiter(head, print_tokens, &print_data);
-	exec_tree = create_tree(head, d->line_count, d->here_list);
-	del_tokens(head);
-	return (exec_tree);
+	if (validate_tokens(tokens, d->operators))
+		return (ft_printf(2, "minishell: validate_tokens() failed\n"), del_tokens(tokens), NULL);
+	if (expand(&tokens, d->line, data))
+		return (ft_printf(2, "minishell: parse() failed\n"), del_tokens(tokens), NULL);
+	// ft_lstiter(tokens, print_tokens, &print_data);
+	d->exec_tree = create_tree(tokens, &d->line_count, &d->here_list);
+	del_tokens(tokens);
+	return (d->exec_tree);
 }
