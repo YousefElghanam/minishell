@@ -1,5 +1,17 @@
 #include "parsing.h"
 
+void	del_token(void *ptr)
+{
+	free(((t_token *)ptr)->fragments);
+	free(((t_token *)ptr)->str);
+	free(ptr);
+}
+
+void	del_tokens(t_list *tokens)
+{
+	ft_lstclear(&tokens, del_token);
+}
+
 int	is_operator(char *line_start, char **operators)
 {
 	size_t	i;

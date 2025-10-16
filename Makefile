@@ -8,10 +8,10 @@ HEADERS = minishell.h libft/libft.h\
 SRC = main.c btree_apply.c print.c \
 		libft/ft_append_arr_str.c libft/ft_arrlen.c libft/ft_atoi.c libft/ft_calloc.c libft/ft_copyarr.c \
 		libft/ft_free_arr.c libft/ft_free_split.c libft/ft_get_env_value.c libft/ft_isalnum.c libft/ft_isalpha.c libft/ft_isdigit.c \
-		libft/ft_itoa.c libft/ft_printf.c libft/ft_printf_utils.c libft/ft_putstr_fd.c libft/ft_putstrerr.c libft/ft_split_dels.c \
+		libft/ft_itoa.c libft/ft_memmove.c libft/ft_printf.c libft/ft_printf_utils.c libft/ft_putstr_fd.c libft/ft_putstrerr.c libft/ft_split_dels.c \
 		libft/ft_split.c libft/ft_strchr.c libft/ft_strdup.c libft/ft_strjoin.c libft/ft_strjoinf1.c libft/ft_strlcpy.c \
 		libft/ft_strlen.c libft/ft_strncmp.c libft/ft_strnstr.c libft/ft_strsjoin.c libft/ft_substr.c \
-		libft/ft_write_types.c libft/ft_write_types2.c\
+		libft/ft_write_types.c libft/ft_write_types2.c libft/palloc_err.c\
 		libft/add_last_id.c libft/free_pids.c
 
 COMMANDS = commands/cd.c\
@@ -29,14 +29,11 @@ PARSING = parsing/execution_tree.c\
 		parsing/parsing.c\
 		parsing/tokenize.c\
 		parsing/validate_tokens.c\
-		parsing/ft_lstadd_back.c\
-		parsing/ft_lstclear.c\
-		parsing/ft_lstdelone.c\
-		parsing/ft_lstiter.c\
-		parsing/ft_lstlast.c\
-		parsing/ft_lstnew.c\
+		parsing/validate_tokens_2.c\
+		parsing/ft_lst.c\
 		parsing/parsing_utils.c\
 		parsing/tokenize_utils.c\
+		parsing/tokenize_utils_2.c\
 		parsing/filename_expansion.c
 
 EXECUTE = execution/binsearch.c\

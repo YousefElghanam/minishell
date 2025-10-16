@@ -6,7 +6,7 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 18:43:42 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/15 22:20:19 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/16 22:25:07 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,14 @@ void	delete_bnode(void *ptr)
 	}
 }
 
-void	init_parse_data(t_parse_data *d)
+void	init_parse_data(t_parse_data *d, t_data *data)
 {
 	d->here_list = NULL;
 	d->line_count = 0;
 	d->exec_tree = NULL;
+	d->tokens = NULL;
 	d->line = NULL;
+	d->data = data;
 	set_operators(d->operators);
 }
 
@@ -93,8 +95,8 @@ int	main(int argc, char **argv, char **envp)
 	t_parse_data	d;
 	t_data			data;
 
-	init_parse_data(&d);
 	init_data(&data, argc, argv, envp);
+	init_parse_data(&d, &data);
 	signal(SIGINT, signal_parent_sigint);
 	while (1)
 	{
@@ -104,10 +106,10 @@ int	main(int argc, char **argv, char **envp)
 		if (d.line[0] && ++d.line_count)
 		{			
 			add_history(d.line);
-			d.exec_tree = create_exec_tree(&d, &data);
+			d.exec_tree = parse(&d);
 			if (d.exec_tree)
 			{
-				// print_btree_pyramid(exec_tree);
+				// print_btree_pyramid(d.exec_tree);
 				data.head = d.exec_tree;
 				execute(d.exec_tree, &data);
 				free_here_docs(&d.here_list);

@@ -56,9 +56,11 @@ typedef struct	s_parse_data
 {
 	char		*line;
 	char		*operators[10];
+	t_list		*tokens;
 	int			*line_count;
 	t_here_doc	*here_list;
 	t_btree		*exec_tree;
+	t_data		*data;
 }	t_parse_data;
 
 
@@ -77,7 +79,7 @@ void	btree_apply_suffix(t_btree *root, void (*applyf)(void *));
 void	print_btree_pyramid(const t_btree *node);
 
 /* parsing/parsing.c */
-t_btree	*create_exec_tree(t_parse_data *d, t_data *data);
+t_btree	*parse(t_parse_data *d, t_data *data);
 // int		btoindex(int options);
 
 // execute
