@@ -6,7 +6,7 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 17:21:55 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/12 22:38:22 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/17 15:04:15 by mchoma           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ void	ft_free_split(char ***split)
 	*split = NULL;
 }
 
-char *get_env_path(char **envp)
+char	*get_env_path(char **envp)
 {
 	int		i;
 
 	i = 0;
-	while(envp[i])
+	while (envp[i])
 	{
 		if (ft_strnstr(envp[i], "PATH=", 5))
 			return (envp[i]);

@@ -18,10 +18,13 @@ int	ft_pwd(t_data *data)
 
 	path = malloc(PATH_MAX);
 	if (path == NULL)
-		return (ft_putstrerr("malloc error \n"), free(path), set_rt(&data->rt, 1), 0);
+		return (ft_putstrerr("malloc error \n"),
+			free(path), set_rt(&data->rt, 1), 0);
 	if (getcwd(path, PATH_MAX) == NULL)
-		return (ft_putstrerr("get_cwd error \n"), free(path), set_rt(&data->rt, 1), 0);
+		return (ft_putstrerr("get_cwd error \n"),
+			free(path), set_rt(&data->rt, 1), 0);
 	if (printf("%s\n", path) == -1)
-		return (ft_putstrerr("printf_eror\n"), free(path), set_rt(&data->rt, 1), 0);
+		return (ft_putstrerr("printf_eror\n"),
+			free(path), set_rt(&data->rt, 1), 0);
 	return (free(path), set_rt(&data->rt, 0), 1);
 }

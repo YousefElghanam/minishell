@@ -12,17 +12,17 @@
 
 #include "libft.h"
 
-char **ft_append_arr_str(char ***arr, char *str)
+char	**ft_append_arr_str(char ***arr, char *str)
 {
 	size_t	i;
 	char	**new;
-	
+
 	i = 0;
 	if (str == NULL)
 		return (*arr);
 	while (arr && *arr && (*arr)[i])
 		i++;
-	new = ft_calloc(i + 2, sizeof(char*));
+	new = ft_calloc(i + 2, sizeof(char *));
 	if (new == NULL)
 		return (NULL);
 	i = 0;

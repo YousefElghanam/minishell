@@ -3,6 +3,7 @@
 pkgs.mkShell {
   buildInputs = [
 	pkgs.gnumake
+	pkgs.norminette
 	pkgs.clang
     pkgs.readline
     pkgs.ncurses  # often needed by readline

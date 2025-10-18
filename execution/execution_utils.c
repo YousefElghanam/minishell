@@ -6,13 +6,13 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 18:59:46 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/12 17:13:57 by mchoma           ###   ########.fr       */
+/*   Updated: 2025/10/17 15:04:41 by mchoma           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-int		wait_and_get_exit_value(t_ids *list)
+int	wait_and_get_exit_value(t_ids *list)
 {
 	int	rt;
 

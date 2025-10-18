@@ -16,9 +16,9 @@ int	cd_path(t_data *data, char **path)
 {
 	char	*str;
 	char	**arr;
-	size_t	i;
+	ssize_t	i;
 
-	i  = 0;
+	i = -1;
 	str = ft_get_env_value(data->env, "CDPATH");
 	if (str == NULL)
 		return (0);
@@ -26,7 +26,7 @@ int	cd_path(t_data *data, char **path)
 	if (arr == NULL)
 		return (free(str), 0);
 	free(str);
-	while (arr[i])
+	while (arr[i] && i++)
 	{
 		str = ft_strjoin(arr[i], "/");
 		if (str == NULL)
@@ -37,7 +37,6 @@ int	cd_path(t_data *data, char **path)
 		if (chdir (str) != -1)
 			return (free_arr((void ***) &arr), free(str), 2);
 		free(str);
-		i++;
 	}
 	return (free_arr((void ***) &arr), 1);
 }
@@ -63,12 +62,10 @@ int	ft_cd(t_data *data, char *path)
 	}
 	if (chdir(path) == -1)
 	{
-		data->rt = 1;
 		ft_putstr_fd("bash: cd: ", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		return (set_rt(&data->rt, 1), 0);
 	}
-	data->rt = 0;
 	return (set_rt(&data->rt, 0), 1);
 }

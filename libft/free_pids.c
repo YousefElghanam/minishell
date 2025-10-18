@@ -21,4 +21,3 @@ void	free_pids(t_ids **list)
 		*list = NULL;
 	}
 }
-

@@ -24,7 +24,7 @@ static int	arg_check(char *arg)
 	while (arg[i])
 	{
 		if (arg[i] == '=')
-			break;
+			break ;
 		if (!ft_isalnum(arg[i]) && !(arg[i] == '_'))
 			return (0);
 		i++;
@@ -40,7 +40,7 @@ int	ft_export(t_data *data, char *arg)
 	{
 		data->rt = 1;
 		return (ft_putstr_fd("bash: export: '", 2),
-			ft_putstr_fd(arg, 2), ft_putstr_fd("': not a valid identifier\n", 2),
+			ft_putstrerr(arg), ft_putstr_fd("': not a valid identifier\n", 2),
 			set_rt(&data->rt, 1), 0);
 	}
 	if (ft_strchr(arg, '='))
@@ -53,6 +53,6 @@ int	ft_export(t_data *data, char *arg)
 	else
 		ft_unset(data, arg);
 	if (ft_append_arr_str(&data->env, ft_strdup(arg)) == NULL)
-		return (free(var), set_rt(&data->rt, 1), 0); //error
-	return (/*free(var),*/ set_rt(&data->rt, 0), 1);
+		return (free(var), set_rt(&data->rt, 1), 0);
+	return (set_rt(&data->rt, 0), 1);
 }

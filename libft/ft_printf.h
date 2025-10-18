@@ -17,7 +17,7 @@
 # include <unistd.h>
 # include "libft.h"
 
-typedef struct	s_base
+typedef struct s_base
 {
 	char	*base;
 	size_t	b_len;

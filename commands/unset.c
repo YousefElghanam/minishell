@@ -31,26 +31,13 @@ static int	check_for_var(char ***envp, char **variable)
 	return (free(tmp), 0);
 }
 
-int		ft_unset(t_data *data, char *variable)
+void	coppy_env_spc(t_data *data, char *variable, int j, char **new)
 {
-	size_t	i;
-	size_t	j;
-	char	*tmp;
-	char	**new;
+	int	i;
 
-	j = check_for_var(&data->env, &variable);
-	i = 0;
-	// printf("%lu == len of new\n", j);
-	tmp = ft_strjoin(variable, "=");
-	if (tmp == NULL)
-		return (set_rt(&data->rt, 1), 0);
-	new = ft_calloc(sizeof(char*), ft_arrlen((void **)data->env) - j + 1);
-	if (new == NULL)
-		return (free(tmp), set_rt(&data->rt, 1), 0);
-	j = 0;
+	i = j;
 	while ((data->env)[i])
 	{
-		// printf("%lu == i\n", i);
 		if (ft_strnstr((data->env)[i], variable, ft_strlen(variable)) == NULL)
 		{
 			new[j] = (data->env)[i];
@@ -60,9 +47,26 @@ int		ft_unset(t_data *data, char *variable)
 			free((data->env)[i]);
 		i ++;
 	}
+}
+
+int	ft_unset(t_data *data, char *variable)
+{
+	size_t	i;
+	size_t	j;
+	char	*tmp;
+	char	**new;
+
+	j = check_for_var(&data->env, &variable);
+	i = 0;
+	tmp = ft_strjoin(variable, "=");
+	if (tmp == NULL)
+		return (set_rt(&data->rt, 1), 0);
+	new = ft_calloc(sizeof(char *), ft_arrlen((void **)data->env) - j + 1);
+	if (new == NULL)
+		return (free(tmp), set_rt(&data->rt, 1), 0);
+	j = 0;
+	coppy_env_spc(data, variable, j, new);
 	free(data->env);
 	data->env = new;
 	return (free(tmp), set_rt(&data->rt, 0), 1);
 }
-
-

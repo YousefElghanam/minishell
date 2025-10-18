@@ -19,7 +19,7 @@ size_t	ft_arrlen(void **arr)
 	i = 0;
 	if (arr == NULL)
 		return (0);
-	while(arr[i])
+	while (arr[i])
 		i++;
 	return (i++);
 }

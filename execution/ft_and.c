@@ -6,7 +6,7 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 19:00:51 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/17 17:05:14 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/18 02:22:45 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,3 @@ void	ft_and(t_btree *tree, t_data *data)
 	if (rt == 0)
 		execute(tree->right, data);
 }
-
