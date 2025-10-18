@@ -123,44 +123,44 @@ int	add_here_node(t_here_doc **here_list, char *delimiter, t_btree *bnode)
 	return (0);
 }
 
-int	create_redirections(t_list **tokens, t_btree *node, t_here_doc **here_list)
+int	create_redirections(t_list **tokens, t_btree *bnode, t_here_doc **here_list)
 {
 	t_list	*cur;
 
 	cur = *tokens;
-	node->redir.in = NULL;
-	node->redir.out = NULL;
-	node->redir.append = 0;
+	bnode->redir.in = NULL;
+	bnode->redir.out = NULL;
+	bnode->redir.append = 0;
 	while (cur && (cur->token->options & WORD || cur->token->options & REDIR_OP))
 	{
 		if (cur->token->options & REDIR_OP)
 		{
 			if (cur->token->options & HERE_DOC)
 			{
-				if (add_here_node(here_list, cur->next->token->str, node))
+				if (add_here_node(here_list, cur->next->token->str, bnode))
 					return (printf("add_here_node failed in create_redirections()\n"), 1);
 			}
 			else if (cur->token->options & OUTPUT_REDIR_APPEND)
 			{
-				node->redir.append = 1;
-				free(node->redir.out);
-				node->redir.out = ft_strdup(cur->next->token->str);
-				if (!node->redir.out)
-					return (free(node->redir.in), 1);
+				bnode->redir.append = 1;
+				free(bnode->redir.out);
+				bnode->redir.out = ft_strdup(cur->next->token->str);
+				if (!bnode->redir.out)
+					return (free(bnode->redir.in), 1);
 			}
 			else if (cur->token->options & INPUT_REDIR)
 			{
-				free(node->redir.in);
-				node->redir.in = ft_strdup(cur->next->token->str);
-				if (!node->redir.in)
-					return (free(node->redir.out), 1);
+				free(bnode->redir.in);
+				bnode->redir.in = ft_strdup(cur->next->token->str);
+				if (!bnode->redir.in)
+					return (free(bnode->redir.out), 1);
 			}
 			else if (cur->token->options & OUTPUT_REDIR)
 			{
-				free(node->redir.out);
-				node->redir.out = ft_strdup(cur->next->token->str);
-				if (!node->redir.out)
-					return (free(node->redir.in), 1);
+				free(bnode->redir.out);
+				bnode->redir.out = ft_strdup(cur->next->token->str);
+				if (!bnode->redir.out)
+					return (free(bnode->redir.in), 1);
 			}
 			cur = cur->next;
 			consume_token(tokens);
@@ -168,14 +168,14 @@ int	create_redirections(t_list **tokens, t_btree *node, t_here_doc **here_list)
 		cur = cur->next;
 		consume_token(tokens);
 	}
-	// printf("for node (%s), redirect input to (%s) and output to (%s)\n", node->cmd_argv[0], node->redir.in, node->redir.out);
+	// printf("for bnode (%s), redirect input to (%s) and output to (%s)\n", bnode->cmd_argv[0], bnode->redir.in, bnode->redir.out);
 	return (0);
 }
 
 t_btree	*parse_command(t_list **tokens, t_here_doc **here_list)
 {
 	t_list	*cur;
-	t_btree	*node;
+	t_btree	*bnode;
 
 	cur = *tokens;
 	if (!cur)
@@ -183,24 +183,24 @@ t_btree	*parse_command(t_list **tokens, t_here_doc **here_list)
 	if (cur->token->options & OPEN_PARENTHESIS)
 	{
 		consume_token(tokens);
-		node = parse_and_or(tokens, here_list);
+		bnode = parse_and_or(tokens, here_list);
 		cur = *tokens;
 		if (!cur || !(cur->token->options & CLOSE_PARENTHESIS))
 			return (ft_printf(2, "Error: Expected `)'\n"), NULL);
 		consume_token(tokens);
-		return (make_bnode(BNODE_SUBSHELL, node, NULL));
+		return (make_bnode(BNODE_SUBSHELL, bnode, NULL));
 	}
 	else if (cur->token->options & WORD || cur->token->options & REDIR_OP)
 	{
-		node = make_bnode(BNODE_COMMAND, NULL, NULL);
-		if (!node)
+		bnode = make_bnode(BNODE_COMMAND, NULL, NULL);
+		if (!bnode)
 			return (ft_printf(2, "malloc failed in make_bnode(): parse_command()\n"), NULL);
-		node->cmd_argv = create_cmd_argv(tokens);
-		if (!node->cmd_argv)
+		bnode->cmd_argv = create_cmd_argv(tokens);
+		if (!bnode->cmd_argv)
 			return (ft_printf(2, "malloc failed in create_cmd_argv()\n"), NULL);
-		if (create_redirections(tokens, node, here_list))
-			return (ft_printf(2, "create_redirections() failed\n"), free_split(node->cmd_argv), NULL);
-		return (node);
+		if (create_redirections(tokens, bnode, here_list))
+			return (ft_printf(2, "create_redirections() failed\n"), free_split(bnode->cmd_argv), NULL);
+		return (bnode);
 	}
 	return (ft_printf(2, "Error: Unexpected token\n"), NULL);
 }
@@ -312,13 +312,17 @@ int	open_here_docs(t_here_doc **here_list, int *line_count)
 
 // BIG ISSUE FOUND: WHAT HAPPENS WHEN MALLOC FAILS DEEP INSIDE ONE OF THESE FUNCTIONS?? YOU RETURN NULL, WHICH IS A VALID RETURN VALUE??
 
-t_btree	*create_tree(t_list *tokens, int *line_count, t_here_doc **here_list)
+t_btree	*create_exec_tree(t_parse_data *d) //t_list *tokens, int *line_count, t_here_doc **here_list)
 {
-	t_btree		*tree;
+	t_btree	*tree;
+	t_list	*tokens;
 
-	tree = parse_and_or(&tokens, here_list);
-	if (open_here_docs(here_list, line_count))
+	tokens = d->tokens;
+	tree = parse_and_or(&tokens, d->here_list);
+	if (open_here_docs(&d->here_list, d->line_count))
 		return (printf("run_here_doc() failed\n"), NULL);
+	// for (t_list *cur = d->tokens; cur; cur = cur->next)
+	// 	printf("node:(%s)\n", cur->token->str);
 	// printf("redirect input to (%s) and output to (%s)\n", tree->redir.in, tree->redir.out);
 	return (tree);
 }

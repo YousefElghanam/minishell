@@ -25,16 +25,21 @@ COMMANDS = commands/cd.c\
 			commands/set_rt.c
 
 PARSING = parsing/execution_tree.c\
+		parsing/expand_fragment_utils.c\
+		parsing/expand_fragment.c\
+		parsing/expand.c\
+		parsing/field_split_utils.c\
+		parsing/field_split.c\
+		parsing/filename_expansion.c\
 		parsing/fragment.c\
-		parsing/parsing.c\
-		parsing/tokenize.c\
-		parsing/validate_tokens.c\
-		parsing/validate_tokens_2.c\
 		parsing/ft_lst.c\
 		parsing/parsing_utils.c\
-		parsing/tokenize_utils.c\
+		parsing/parsing.c\
 		parsing/tokenize_utils_2.c\
-		parsing/filename_expansion.c
+		parsing/tokenize_utils.c\
+		parsing/tokenize.c\
+		parsing/validate_tokens_2.c\
+		parsing/validate_tokens.c
 
 EXECUTE = execution/binsearch.c\
 		  execution/entry.c\
@@ -65,8 +70,8 @@ $(OBJ_DIR)%.o: %.c
 test: $(TEST_OBJ)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o test
 
-testj :
-	make runt -j `nproc`
+testj:
+	make test -j `nproc`
 
 $(TEST_OBJ_DIR)%.o: %.c
 	mkdir -p $(dir $@)

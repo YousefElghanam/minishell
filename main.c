@@ -6,11 +6,12 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 18:43:42 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/16 22:25:07 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/17 18:30:24 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "parsing/parsing.h"
 #include <signal.h>
 
 void	set_operators(char **operators)

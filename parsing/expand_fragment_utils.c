@@ -6,7 +6,7 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 22:06:53 by jel-ghna          #+#    #+#             */
-/*   Updated: 2025/10/16 23:17:33 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/18 01:26:41 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	*create_var_val(char *str, size_t *start, t_expansion_data *xd)
 	j = 0;
 	if (str == 0 && !(xd->i + 1 == xd->token_node->token->fragment_count))
 		return(ft_strdup(""));
+	if (str[j] == '*')
+		return (*start += 1, ft_strdup(""));
 	if (str[j] == '$')
 		return (*start += 1, ft_strdup("$$"));
 	if (str[j] == '?')
@@ -38,16 +40,30 @@ char	*create_var_val(char *str, size_t *start, t_expansion_data *xd)
 	return (value);
 }
 
-char	*safe_strjoin(char *str, char *str2, int free_second_str)
+char	*safe_strjoin(char **str, char *str2, int free_second_str)
 {
 	char	*tmp;
 
-	tmp = ft_strjoin(str, str2);
-	free(str);
+	tmp = ft_strjoin(*str, str2);
+	free(*str);
 	if (free_second_str)
 		free(str2);
 	if (!tmp)
 		return (NULL);
-	str = tmp;
-	return (str);
+	*str = tmp;
+	return (*str);
+}
+
+int	append_substr(t_list *target_node, char *str, int free_second_str)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin(target_node->token->str, str);
+	free(target_node->token->str);
+	if (free_second_str)
+		free(str);
+	if (!tmp)
+		return (1);
+	target_node->token->str = tmp;
+	return (0);
 }

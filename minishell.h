@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+typedef struct s_list t_list;
+
 //this contains ids of the child processes that are currently running
 typedef struct s_ids
 {
@@ -51,7 +53,7 @@ typedef struct	s_here_doc
 	char				*file_name;
 	struct s_here_doc	*next;
 }	t_here_doc;
-//this will contain envp
+
 typedef struct	s_parse_data
 {
 	char		*line;
@@ -79,7 +81,7 @@ void	btree_apply_suffix(t_btree *root, void (*applyf)(void *));
 void	print_btree_pyramid(const t_btree *node);
 
 /* parsing/parsing.c */
-t_btree	*parse(t_parse_data *d, t_data *data);
+t_btree	*parse(t_parse_data *d);
 // int		btoindex(int options);
 
 // execute

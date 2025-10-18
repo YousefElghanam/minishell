@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_or.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchoma <your@mail.com>                     +#+  +:+       +#+        */
+/*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 19:03:02 by mchoma            #+#    #+#             */
-/*   Updated: 2025/10/06 19:03:13 by mchoma           ###   ########.fr       */
+/*   Updated: 2025/10/17 17:05:21 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../parsing/libft/libft.h"
+#include "../libft/libft.h"
 #include "executor.h"
 
 void	ft_or(t_btree *tree, t_data *data)

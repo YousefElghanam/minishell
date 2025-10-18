@@ -6,7 +6,7 @@
 /*   By: jel-ghna <jel-ghna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 15:59:58 by jel-ghna          #+#    #+#             */
-/*   Updated: 2025/10/16 22:15:00 by jel-ghna         ###   ########.fr       */
+/*   Updated: 2025/10/17 19:05:15 by jel-ghna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ size_t	count_fragments(char *line, ssize_t word_len, char **operators)
 	i = -1;
 	while (++i < word_len)
 	{
-		if (line[i] == '\"')
+		if (line[i] == '\"' && ft_strchr(&line[i + 1], '\"'))
 		{
 			count++;
 			i += (ft_strchr(&line[i + 1], '\"') - &line[i]);
 		}
-		else if (line[i] == '\'')
+		else if (line[i] == '\'' && ft_strchr(&line[i + 1], '\''))
 		{
 			count++;
 			i += (ft_strchr(&line[i + 1], '\'') - &line[i]);
@@ -51,7 +51,7 @@ size_t	count_fragments(char *line, ssize_t word_len, char **operators)
 		else
 		{
 			count++;
-			i += len_to_quote_or_delimiter(&line[i], operators) - 1;
+			i += len_to_quote_or_delimiter(&line[i], operators);
 		}
 	}
 	return (count);

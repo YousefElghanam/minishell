@@ -1,19 +1,6 @@
 #include "parsing.h"
-// x &= ~(1 << 2)
-// 000101
-// 111011
-//=000001
 
 // DON't FORGET FUNCHECK
-
-// #include <fcntl.h>
-// void	signal_handler(int sig)
-// {
-// 	int fd = open("test", O_RDWR);
-// 	write(fd, "sig recieved\n", 13);
-// 	exit(1);
-// 	// printf("sig recieved\n");
-// }
 
 // What if we have 2 bits of 2, and we want to check the 1 bit that is to the left?
 // we read the one to the right first, which is an incorrect result.
@@ -41,61 +28,6 @@ int	print_fragment_str(char *line, t_token *token, size_t fragment_i)
 		return (1);
 	ft_printf(1, "expanded (%s) ", fragment_str);
 	free(fragment_str);
-	return (0);
-}
-
-void	insert_expanded_filenames(t_list **files_list, t_list **node)
-{
-	free((*node)->token->fragments);
-	// free((*node)->token->str);
-	// free((*node)->token);
-	ft_lstlast(*files_list)->next = (*node)->next;
-	(*node)->token = (*files_list)->token;
-	(*node)->next = (*files_list)->next;
-	// free(*files_list);
-}
-
-int	expand_filename(t_list **node, size_t fragment_i)
-{
-	char	**files_arr;
-	t_list	*files_list;
-
-	files_arr = NULL;
-	files_list = NULL;
-	files_arr = expand_star_append((*node)->token->str, &files_arr);
-	if (!files_arr)
-		return (printf("expand_star_append() returned NULL"), 0);
-	if (create_field_split_tokens(&files_list, files_arr, fragment_i, *node))
-		return (free_split(files_arr), del_tokens(files_list), 1);
-	free_split(files_arr);
-	insert_expanded_filenames(&files_list, node);
-	return (0);
-}
-
-int	filename_expansion(t_list **head, char *line)
-{
-	t_list	*node;
-
-	node = *head;
-	while (node)
-	{
-		if (node->token->options & WORD && node->token->fragments[0].type == UNQUOTED) // THIS MIGHT NEED TO BE CHANGED, READ THE MANUAL, SEARCH FOR UNQUOTED '*'
-		{
-			// printf("fragment_i is (%zi) --- for token (%s), it's type is (%d)\n", node->token->fragment_i, node->token->str, node->token->fragments[node->token->fragment_i].type);
-			// if (node->token->options & EXPANDED_WORD && node->token->fragments && node->token->fragments[node->token->fragment_i].type != UNQUOTED)
-			// 	;
-			// else if (ft_strchr(node->token->str, '*') == NULL)
-			// 	;
-			// else if (expand_filename(&node, node->token->fragment_i))
-			// 	return (1);
-			if (ft_strchr(node->token->str, '*'))
-			{
-				if (expand_filename(&node, node->token->fragment_i))
-					return (1);
-			}
-		}
-		node = node->next;
-	}
 	return (0);
 }
 
@@ -147,9 +79,8 @@ static void	print_tokens(t_print_d *data)
 	// free(token->fragments);
 }
 
-t_btree	*parse(t_parse_data *d, t_data *data)
+t_btree	*parse(t_parse_data *d)
 {
-	t_list		*tokens;
 	t_print_d	print_data;
 
 	print_data.line = d->line;
@@ -165,7 +96,7 @@ t_btree	*parse(t_parse_data *d, t_data *data)
 		return (ft_printf(2, "minishell: expand() failed\n"),
 		del_tokens(d->tokens), NULL);
 	// ft_lstiter(d->tokens, print_tokens, &print_data);
-	d->exec_tree = create_tree(d->tokens, d->line_count, &d->here_list);
+	d->exec_tree = create_exec_tree(d);
 	del_tokens(d->tokens);
 	return (d->exec_tree);
 }

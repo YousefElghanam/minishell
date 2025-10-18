@@ -14,47 +14,35 @@ static char	*create_expanded_fragment(char *fragment_str, char **target_str,
 		if (fragment_str[i] == '$')
 		{
 			fragment_str[i] = 0;
-			if (!safe_strjoin(*target_str, &fragment_str[start], 0))
+			if (!safe_strjoin(target_str, &fragment_str[start], 0))
 				return (NULL);
 			start = i + 1;
 			var_value = create_var_val(&fragment_str[start], &start, xd);
-			if (!var_value || !safe_strjoin(*target_str, var_value, 1))
+			if (!var_value || !safe_strjoin(target_str, var_value, 1))
 				return (NULL);
 			i = start;
 		}
 		else
 			i++;
 	}
-	return (safe_strjoin(*target_str, &fragment_str[start], 0));
+	return (safe_strjoin(target_str, &fragment_str[start], 0));
 }
 
-static int	append_substr(t_list *target_node, char *str, int free_second_str)
+static int	expand_single_quoted_fragment(char *fragment_str, t_expansion_data *xd)
 {
 	char	*tmp;
+	t_list	*target_node;
 
-	tmp = ft_strjoin(target_node->token->str, str);
-	free(target_node->token->str);
-	if (free_second_str)
-		free(str);
+	target_node = xd->target_node;
+	tmp = ft_strjoin(target_node->token->str, fragment_str);
 	if (!tmp)
 		return (1);
+	free(target_node->token->str);
 	target_node->token->str = tmp;
 	return (0);
 }
 
-int	expand_single_quoted_fragment(char *fragment_str, t_expansion_data *xd)
-{
-	char	*tmp;
-
-	tmp = ft_strjoin((*xd->target_node)->token->str, fragment_str);
-	if (!tmp)
-		return (1);
-	free((*xd->target_node)->token->str);
-	(*xd->target_node)->token->str = tmp;
-	return (0);
-}
-
-int	expand_double_quoted_fragment(char *fragment_str, t_expansion_data *xd)
+static int	expand_double_quoted_fragment(char *fragment_str, t_expansion_data *xd)
 {
 	char	*var_val;
 	size_t	start;
@@ -67,23 +55,23 @@ int	expand_double_quoted_fragment(char *fragment_str, t_expansion_data *xd)
 		if (fragment_str[i] == '$')
 		{
 			fragment_str[i] = 0;
-			if (append_substr(*xd->target_node, &fragment_str[start], 0))
+			if (append_substr(xd->target_node, &fragment_str[start], 0))
 				return (1);
 			start = i + 1;
-			var_val = create_var_val(&fragment_str[start], &start, xd->d->data);
+			var_val = create_var_val(&fragment_str[start], &start, xd);
 			if (!var_val)
 				return (1);
-			if (append_substr(*xd->target_node, var_val, 1))
+			if (append_substr(xd->target_node, var_val, 1))
 				return (1);
 			i = start;
 		}
 		else
 			i++;
 	}
-	return (append_substr(*xd->target_node, &fragment_str[start], 0));
+	return (append_substr(xd->target_node, &fragment_str[start], 0));
 }
 
-int	expand_unquoted_fragment(char *fragment_str, t_expansion_data *xd)
+static int	expand_unquoted_fragment(char *fragment_str, t_expansion_data *xd)
 {
 	t_token	*token;
 	char	*expanded;
@@ -96,7 +84,7 @@ int	expand_unquoted_fragment(char *fragment_str, t_expansion_data *xd)
 	if (!expanded)
 		return (1);
 	if (!ft_strchr(expanded, ' ') && !ft_strchr(expanded, '	'))
-		return (append_substr(*(xd->target_node), expanded, 1), 0);
+		return (append_substr(xd->target_node, expanded, 1), 0);
 	token->fragments[xd->i].starts_with_space = (ft_strchr(" 	", expanded[0])
 		!= NULL);
 	token->fragments[xd->i].ends_with_space = (*expanded
@@ -104,4 +92,26 @@ int	expand_unquoted_fragment(char *fragment_str, t_expansion_data *xd)
 	if (field_split(fragment_str, expanded, xd))
 		return (free(expanded), 1);
 	return (free(expanded), 0);
+}
+
+int	expand_fragment(t_expansion_data *xd)
+{
+	t_token	*token;
+	int		res;
+	char	*fragment_str;
+
+	res = 1;
+	token = xd->token_node->token;
+	fragment_str = ft_substr(xd->d->line, token->fragments[xd->i].start,
+			token->fragments[xd->i].end - token->fragments[xd->i].start + 1);
+	if (!fragment_str)
+		return (1);
+	if (token->fragments[xd->i].type == SINGLE)
+		res = expand_single_quoted_fragment(fragment_str, xd);
+	else if (token->fragments[xd->i].type == DOUBLE)
+		res = expand_double_quoted_fragment(fragment_str, xd);
+	else if (token->fragments[xd->i].type == UNQUOTED)
+		res = expand_unquoted_fragment(fragment_str, xd);
+	free(fragment_str);
+	return (res);
 }
